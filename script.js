@@ -1,52 +1,82 @@
-const calcular = document.getElementById('calcular');
-const error = document.getElementById('error');
-const flu = document.getElementById('flu');
-const man = document.getElementById('man');
-const m2m = document.getElementById('m2m');
-calcular.addEventListener('click', () => {
-    let peso = document.getElementById('peso').value;
-    let resultado;
-    if (peso > 0){
-        if (peso <= 30){
-            resultado = calculo1(peso);
-        } else{
-            resultado = calculo2(peso);
-        }
-        mant = resultado / 24;
-        aux = mant * 1.5;
-        console.log(resultado, mant, m2m);
-        error.style.display = 'none';
-        flu.innerHTML =  ' cc: ' + resultado;
-        man.innerHTML = ' cc/hr: '+ Math.round(mant);
-        m2m.innerHTML = 'm+m/2: '+ Math.round(aux);
-        flu.style.display = 'block';
-        man.style.display = 'block';
-        m2m.style.display = 'block';
-    } else{
-        error.style.display = 'block'
-        flu.style.display = 'none';
-        man.style.display = 'none';
-        m2m.style.display = 'none';
-    }
+const palabras = ['MANZANA', 'BANANA', 'SANDIA', 'NARANJA', 'UVA', 'TOMATE', 'KIWI', 'MANGO'];
+let palabra = selectRandomWord(palabras);
+let intentos = 6;
+let grid;
 
-})
-
-function calculo1 (peso) {
-    let vol_d;
-    if (peso <= 10){
-        vol_d = peso * 100;
-    } else if(peso <= 20 && peso > 10){
-        vol_d = 10 * 100 + (peso-10)*50;
-    } else {
-        vol_d = 10*100+10*50+(peso-20)*20;
-    }
-    return vol_d;
+function selectRandomWord(wordList) {
+    return wordList[Math.floor(Math.random() * wordList.length)];
 }
 
-function calculo2(peso) {
-    let sup_c;
-    let vol_d;
-    sup_c = ((peso*4)+7)/(peso+90);
-    vol_d = sup_c * 2000;
-    return vol_d;
+console.log(palabra);
+
+window.addEventListener('load', init);
+
+function init() {
+    console.log('Esto se ejecuta solo cuando se carga la pagina web');
+    grid = document.getElementById("grid");
+}
+
+const button = document.getElementById("guess-button");
+
+button.addEventListener("click", intentar);
+
+function intentar() {
+    const INTENTO = leerIntento();
+    console.log(INTENTO);
+    const row = document.createElement('div');
+    row.className = 'row';
+
+    if (INTENTO === palabra) {
+        for (let i in palabra) {
+            const span = document.createElement('span');
+            span.className = 'letter';
+            span.innerHTML = palabra[i];
+            span.style.backgroundColor = '#79b851';
+            row.appendChild(span);
+        }
+        grid.appendChild(row);  // Agrega la fila al contenedor (grid)
+        terminar("<h1>GANASTE!😀</h1>");
+        return;
+    }
+
+    for (let i in palabra) {
+        const span = document.createElement('span');
+        span.className = 'letter';
+
+        if (INTENTO[i] === palabra[i]) {
+            span.innerHTML = INTENTO[i];
+            span.style.backgroundColor = '#79b851';
+        } else if (palabra.includes(INTENTO[i])) {
+            span.innerHTML = INTENTO[i];
+            span.style.backgroundColor = '#f3c237';
+        } else {
+            const letraIntento = INTENTO[i] ?? '-';
+            console.log(letraIntento, "GRIS");
+            span.innerHTML = letraIntento;
+            span.style.backgroundColor = 'grey';
+        }
+        row.appendChild(span);
+    }
+
+    intentos--;
+
+    if (intentos === 0) {
+        terminar("<h1>PERDISTE!😖</h1>");
+    }
+
+    grid.appendChild(row);  // Agrega la fila al contenedor (grid)
+}
+
+function leerIntento() {
+    let intento = document.getElementById("guess-input").value;
+    return intento.toUpperCase();
+}
+
+function terminar(mensaje) {
+    const input = document.getElementById("guess-input");
+    const boton = document.getElementById("guess-button");
+    input.disabled = true;
+    boton.disabled = true;
+    let contenedor = document.getElementById('guesses');
+    contenedor.innerHTML = mensaje;
 }
