@@ -1,12 +1,25 @@
 const palabras = ['MANZANA', 'BANANA', 'SANDIA', 'NARANJA', 'UVA', 'TOMATE', 'KIWI', 'MANGO'];
-let palabra = selectRandomWord(palabras);
+let palabra;
 let intentos = 6;
 let grid;
 
 function selectRandomWord(wordList) {
     return wordList[Math.floor(Math.random() * wordList.length)];
 }
+const endpoint = "https://random-word-api.herokuapp.com/word?length=5";
 
+fetch(endpoint).then((response) => {
+    response.json().then((data) => {
+        console.log(data[0]);
+        palabra = data[0].toUpperCase();
+    });
+});
+function getWord(){
+    let min = 0;
+    let max = diccionario.length;
+    let i = Math.floor(Math.random() * (max-min))+min;
+    return diccionario[i];
+}
 console.log(palabra);
 
 window.addEventListener('load', init);
@@ -24,8 +37,13 @@ function intentar() {
     const INTENTO = leerIntento();
     console.log(INTENTO);
     const row = document.createElement('div');
+    const ERROR = document.getElementById("error");
     row.className = 'row';
-
+    if(INTENTO.length!==5){
+        ERROR.innerHTML="La palabra debe de ser de 5 letras";
+        ERROR.style.display="block";
+    }else{
+        ERROR.style.display="none";
     if (INTENTO === palabra) {
         for (let i in palabra) {
             const span = document.createElement('span');
@@ -65,8 +83,8 @@ function intentar() {
     }
 
     grid.appendChild(row);  // Agrega la fila al contenedor (grid)
+    }
 }
-
 function leerIntento() {
     let intento = document.getElementById("guess-input").value;
     return intento.toUpperCase();
