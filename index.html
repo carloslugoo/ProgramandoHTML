@@ -1,20 +1,54 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Wordle</title>
-        <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
-  </head>
-  <body>
-    <h1>Wordle</h1>
-    <input type="text" id="guess-input">
-    <p id="error" style="color: red;"></p>
-    <button id="guess-button">Intentar</button>
-	<br>
-    <div id="grid">
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-    </div>
-    <p id="guesses">
-
-  </body>
+    <div class="container">
+        <div class="todo-container">
+          <h2>Cargar tarea: </h2>
+          <div>
+            <div class="inputs">
+                <input type="text" id="task-input" placeholder="Nueva tarea">
+                <select id="tags-select">
+                    <option value="estudio">Estudiar</option>
+                    <option value="tarea">Tarea</option>
+                    <option value="personal">Personal</option>
+                </select>
+            </div>
+            <div class="inputs">
+                <button id="add-task-btn" onclick="addTask()">Agregar tarea</button>
+                <button id="delete-btn" onclick="completeTask()">Completar</button>
+                <button id="complete-btn" onclick="deleteTask()">Eliminar </button>
+            </div>
+        </div>
+        </div>
+      
+        <div class="contenedor-task">
+          <div class="task-container" id="work-container">
+            <h2>Tareas</h2>
+            <ul id="tarea"></ul>
+          </div>
+      
+          <div class="task-container" id="personal-container">
+            <h2>Personal</h2>
+            <ul id="personal"></ul>
+          </div>
+      
+          <div class="task-container" id="study-container">
+            <h2>Estudio</h2>
+            <ul id="estudio"></ul>
+          </div>
+          <div class="task-container" id="completado-container">
+            <h2>Completados</h2>
+            <ul id="completo" class="completed-task"></ul>
+          </div>
+        </div>
+      </div>
+    <script src="script.js"></script>
+</body>
 </html>

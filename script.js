@@ -1,100 +1,152 @@
-const palabras = ['MANZANA', 'BANANA', 'SANDIA', 'NARANJA', 'UVA', 'TOMATE', 'KIWI', 'MANGO'];
-let palabra;
-let intentos = 6;
-let grid;
+ // Cargar tareas almacenadas al cargar la página
+ window.onload = function() {
+    var storedTasks1 = localStorage.getItem('tasks1');
+    var storedTasks2 = localStorage.getItem('tasks2');
+    var storedTasks3 = localStorage.getItem('tasks3');
+    var storedTasks4 = localStorage.getItem('tasks4');
 
-function selectRandomWord(wordList) {
-    return wordList[Math.floor(Math.random() * wordList.length)];
+
+    if (storedTasks1) {
+        var estudioList = document.getElementById('estudio');
+        estudioList.innerHTML = storedTasks1;
+    }
+    if (storedTasks2) {
+        var tareaList = document.getElementById('tarea');
+        tareaList.innerHTML = storedTasks2;
+    }
+    if (storedTasks3) {
+        var personalList = document.getElementById('personal');
+        personalList.innerHTML = storedTasks3;
+    }
+    if (storedTasks4) {
+        var completoList = document.getElementById('completo');
+        completoList.innerHTML = storedTasks4;
+    }
+};
+function addTask() {
+    var taskInput = document.getElementById('task-input');
+    var tagsSelect = document.getElementById('tags-select');
+    var taskText = taskInput.value.trim();
+    var taskTag = tagsSelect.value;
+
+    if (taskText !== '') {
+       
+        var taskItem = document.createElement('li');
+        miLista.style.fontWeight = "bold";
+        
+        var checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+
+        var taskLabel = document.createElement('span');
+        taskLabel.textContent = `${taskText}`;
+        console.log(taskTag)
+
+        var deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Eliminar';
+        deleteButton.onclick = function() {
+            taskItem.style.color = "black";
+            todoList.removeChild(taskItem);
+            saveTasks();
+        };
+
+        taskItem.appendChild(checkbox);
+        taskItem.appendChild(taskLabel);
+        
+        if (taskTag == 'estudio'){
+            var todoList = document.getElementById('estudio');
+            todoList.appendChild(taskItem);
+        } else if (taskTag == 'tarea'){
+            var todoList = document.getElementById('tarea');
+            todoList.appendChild(taskItem);
+        } else{
+            var todoList = document.getElementById('personal');
+            todoList.appendChild(taskItem);
+        }
+        taskInput.value = '';
+
+
+        // Guardar tareas después de agregar una nueva
+        saveTasks();
+    }
 }
-const endpoint = "https://random-word-api.herokuapp.com/word?length=5";
 
-fetch(endpoint).then((response) => {
-    response.json().then((data) => {
-        console.log(data[0]);
-        palabra = data[0].toUpperCase();
+function deleteTask() {
+    var estudioList = document.getElementById('estudio');
+    var tareaList = document.getElementById('tarea');
+    var personalList = document.getElementById('personal');
+    var completoList = document.getElementById('completo');
+
+    var tasks1 = estudioList.querySelectorAll('.task input:checked');
+    var tasks2 = tareaList.querySelectorAll('.task input:checked');
+    var tasks3 = personalList.querySelectorAll('.task input:checked');
+    var tasks4 = completoList.querySelectorAll('.task input:checked');
+
+    tasks1.forEach(function(checkedTask) {
+        var taskItem = checkedTask.parentElement;
+        estudioList.removeChild(taskItem);
     });
-});
-function getWord(){
-    let min = 0;
-    let max = diccionario.length;
-    let i = Math.floor(Math.random() * (max-min))+min;
-    return diccionario[i];
-}
-console.log(palabra);
 
-window.addEventListener('load', init);
+    tasks2.forEach(function(checkedTask) {
+        var taskItem = checkedTask.parentElement;
+        tareaList.removeChild(taskItem);
+    });
 
-function init() {
-    console.log('Esto se ejecuta solo cuando se carga la pagina web');
-    grid = document.getElementById("grid");
-}
+    tasks3.forEach(function(checkedTask) {
+        var taskItem = checkedTask.parentElement;
+        personalList.removeChild(taskItem);
+    });
+    
+    tasks4.forEach(function(checkedTask) {
+        var taskItem = checkedTask.parentElement;
+        completoList.removeChild(taskItem);
+    });
 
-const button = document.getElementById("guess-button");
 
-button.addEventListener("click", intentar);
-
-function intentar() {
-    const INTENTO = leerIntento();
-    console.log(INTENTO);
-    const row = document.createElement('div');
-    const ERROR = document.getElementById("error");
-    row.className = 'row';
-    if(INTENTO.length!==5){
-        ERROR.innerHTML="La palabra debe de ser de 5 letras";
-        ERROR.style.display="block";
-    }else{
-        ERROR.style.display="none";
-    if (INTENTO === palabra) {
-        for (let i in palabra) {
-            const span = document.createElement('span');
-            span.className = 'letter';
-            span.innerHTML = palabra[i];
-            span.style.backgroundColor = '#79b851';
-            row.appendChild(span);
-        }
-        grid.appendChild(row);  // Agrega la fila al contenedor (grid)
-        terminar("<h1>GANASTE!😀</h1>");
-        return;
-    }
-
-    for (let i in palabra) {
-        const span = document.createElement('span');
-        span.className = 'letter';
-
-        if (INTENTO[i] === palabra[i]) {
-            span.innerHTML = INTENTO[i];
-            span.style.backgroundColor = '#79b851';
-        } else if (palabra.includes(INTENTO[i])) {
-            span.innerHTML = INTENTO[i];
-            span.style.backgroundColor = '#f3c237';
-        } else {
-            const letraIntento = INTENTO[i] ?? '-';
-            console.log(letraIntento, "GRIS");
-            span.innerHTML = letraIntento;
-            span.style.backgroundColor = 'grey';
-        }
-        row.appendChild(span);
-    }
-
-    intentos--;
-
-    if (intentos === 0) {
-        terminar("<h1>PERDISTE!😖</h1>");
-    }
-
-    grid.appendChild(row);  // Agrega la fila al contenedor (grid)
-    }
-}
-function leerIntento() {
-    let intento = document.getElementById("guess-input").value;
-    return intento.toUpperCase();
+    // Guardar tareas después de eliminar
+    saveTasks();
 }
 
-function terminar(mensaje) {
-    const input = document.getElementById("guess-input");
-    const boton = document.getElementById("guess-button");
-    input.disabled = true;
-    boton.disabled = true;
-    let contenedor = document.getElementById('guesses');
-    contenedor.innerHTML = mensaje;
+//completado
+function completeTask() {
+    var estudioList = document.getElementById('estudio');
+    var tareaList = document.getElementById('tarea');
+    var personalList = document.getElementById('personal');
+    var tasks1 = estudioList.querySelectorAll('.task input:checked');
+    var tasks2 = tareaList.querySelectorAll('.task input:checked');
+    var tasks3 = personalList.querySelectorAll('.task input:checked');
+
+    var completoList = document.getElementById('completo');
+    
+    tasks1.forEach(function(checkedTask) {
+        var taskItem = checkedTask.parentElement;
+        completoList.appendChild(taskItem);
+    });
+
+    tasks2.forEach(function(checkedTask) {
+        var taskItem = checkedTask.parentElement;
+        completoList.appendChild(taskItem);
+    });
+
+    tasks3.forEach(function(checkedTask) {
+        var taskItem = checkedTask.parentElement;
+        completoList.appendChild(taskItem);
+    });
+
+    saveTasks();
+}
+function saveTasks() {
+    var estudioList = document.getElementById('estudio');
+    var tareaList = document.getElementById('tarea');
+    var personalList = document.getElementById('personal');
+    var completoList = document.getElementById('completo');
+
+    var tasks1 = estudioList.innerHTML;
+    var tasks2 = tareaList.innerHTML;
+    var tasks3 = personalList.innerHTML;
+    var tasks4 = completoList.innerHTML;
+
+    localStorage.setItem('tasks1', tasks1);
+    localStorage.setItem('tasks2', tasks2);
+    localStorage.setItem('tasks3', tasks3);
+    localStorage.setItem('tasks4', tasks4);
 }
