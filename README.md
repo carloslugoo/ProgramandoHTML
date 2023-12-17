@@ -1,5 +1,5 @@
 # Programando Paraguay - Bootcamp
-Acerca del Bootcamp: https://bootcamp.ciditpy.org/ <br>
+Acerca del Bootcamp: https://programandopy.org <br>
 Contenido: https://programandopy.github.io/minibootcamp-v3/
 # Proyectos
 `Proyecto Calculadora de hidratación basal` <br>
